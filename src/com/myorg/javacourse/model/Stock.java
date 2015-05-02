@@ -1,4 +1,4 @@
-package com.myorg.javacourse;
+package com.myorg.javacourse.model;
 
 import java.util.Date;
 
@@ -7,7 +7,7 @@ Stock.java
 Purpose: Represents a Stock
 
 @author Eli Wainer
-@version 1.0 17/04/2015
+@version 1.1 02/05/2015
 */
 public class Stock 
 {
@@ -39,6 +39,14 @@ public class Stock
 		this.ask = ask;
 		this.bid = bid;
 		this.date = date;
+	}
+	
+	// public Stock(Stock stockToCopy) 
+	// ===============================
+	// Copy Constructor
+	public Stock(Stock stockToCopy) 
+	{
+		this(stockToCopy.getSymbol(), stockToCopy.getAsk(), stockToCopy.getBid(), stockToCopy.getDate());
 	}
 	
 	// ***************************************
@@ -113,9 +121,11 @@ public class Stock
 	// Member Functions Section
 	// ***************************************
 	
-	// public String getHtmlDescription()
-	// ==================================
-	// Get an HTML description of the Stock
+	/**
+	 * This method gets an HTML description of the Stock
+	 *
+	 * @return      the HTML description of the Stock
+	 */
 	public String getHtmlDescription()
 	{
 		return(new String("<b>Stock Symbol: </b>" + getSymbol() +

@@ -1,12 +1,11 @@
 package com.myorg.javacourse.model;
-import com.myorg.javacourse.Stock;
 
 /**
 Portfolio.java
 Purpose: Represents a Portfolio
 
 @author Eli Wainer
-@version 1.0 01/05/2015
+@version 1.1 02/05/2015
 */
 public class Portfolio 
 {
@@ -24,13 +23,29 @@ public class Portfolio
 	
 	// public Portfolio() 
 	// ==================
-	// Constructor
-	public Portfolio(String newTitle) 
+	// Empty Constructor
+	public Portfolio() 
 	{
 		super();
-		title = newTitle;
 		stocks = new Stock[MAX_PORTFOLIO_SIZE];
 		currPortfolioIndex = 0;
+	}
+	
+	// public Portfolio(Portfolio portfolioToCopy)  
+	// ===========================================
+	// Copy Constructor
+	public Portfolio(Portfolio portfolioToCopy) 
+	{
+		title = portfolioToCopy.getTitle();
+		currPortfolioIndex = portfolioToCopy.getCurrPortfolioIndex();
+		stocks = new Stock[MAX_PORTFOLIO_SIZE];
+		
+		// Go over the given Portfolio
+		for(int i = 0; i < currPortfolioIndex; i++)
+		{
+			// Deep Clone the current stock
+			stocks[i] = new Stock(portfolioToCopy.getStocks()[i]);
+		}
 	}
 	
 	// ***************************************
@@ -53,13 +68,39 @@ public class Portfolio
 		return title;
 	}
 	
+	// public void setTitle(String newTitle)
+	// =====================================
+	// Set the Title of the Portfolio
+	public void setTitle(String newTitle)
+	{
+		title = newTitle;
+	}
+	
+	// public int getCurrPortfolioIndex()
+	// ==================================
+	// Return the current Portfolio index
+	public int getCurrPortfolioIndex()
+	{
+		return currPortfolioIndex;
+	}
+	
+	// public int setCurrPortfolioIndex()
+	// ==================================
+	// Set the current Portfolio index
+	public void setCurrPortfolioIndex(int newIndex)
+	{
+		currPortfolioIndex = newIndex;
+	}
+	
 	// ***************************************
 	// Member Functions Section
 	// ***************************************
 	
-	// public void addStock(Stock stockToAdd)
-	// ======================================
-	// Add a new Stock to the Portfolio
+	/**
+	 * This method adds a new Stock to the Portfolio
+	 *
+	 * @param  stockToAdd	the Stock to be added
+	 */
 	public void addStock(Stock stockToAdd)
 	{
 		// If Stock is valid and Portfolio is not full
@@ -79,9 +120,11 @@ public class Portfolio
 		}
 	}
 
-	// public String getHtmlString()
-	// =============================
-	// Get an HTML string of the Portfolio
+	/**
+	 * This method gets an HTML description of the Portfolio
+	 *
+	 * @return      the HTML description of the Portfolio
+	 */
 	public String getHtmlString()
 	{
 		// Add Portfolio's title
