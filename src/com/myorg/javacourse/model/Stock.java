@@ -46,7 +46,10 @@ public class Stock
 	// Copy Constructor
 	public Stock(Stock stockToCopy) 
 	{
-		this(stockToCopy.getSymbol(), stockToCopy.getAsk(), stockToCopy.getBid(), stockToCopy.getDate());
+		this(new String(stockToCopy.getSymbol()), 
+			 stockToCopy.getAsk(), 
+			 stockToCopy.getBid(), 
+			 new Date(stockToCopy.getDate().getTime()));
 	}
 	
 	// ***************************************
