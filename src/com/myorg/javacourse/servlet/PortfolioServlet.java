@@ -40,7 +40,7 @@ public class PortfolioServlet extends HttpServlet
 		resp.getWriter().println(testPortfolio1.getHtmlString());
 		resp.getWriter().println(testPortfolio2.getHtmlString());
 		
-		resp.getWriter().println("-----------------------------------------------------------------------------------------------------");
+		resp.getWriter().println("---------------------------------------------------------------------------");
 		
 		// SECTION G + H + I
 		testPortfolio1.getStocks()[0] = testPortfolio1.getStocks()[1];
@@ -50,7 +50,7 @@ public class PortfolioServlet extends HttpServlet
 		resp.getWriter().println(testPortfolio1.getHtmlString());
 		resp.getWriter().println(testPortfolio2.getHtmlString());
 		
-		resp.getWriter().println("-----------------------------------------------------------------------------------------------------");
+		resp.getWriter().println("---------------------------------------------------------------------------");
 		
 		// SECTION J + K + I
 		testPortfolio2.getStocks()[2].setBid((float)55.55);

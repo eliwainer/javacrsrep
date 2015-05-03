@@ -1,5 +1,6 @@
 package com.myorg.javacourse.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -131,9 +132,13 @@ public class Stock
 	 */
 	public String getHtmlDescription()
 	{
+		// Format the Date object
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		String dateToStr = simpleDateFormat.format(getDate());
+
 		return(new String("<b>Stock Symbol: </b>" + getSymbol() +
 						  " <b>Bid: </b>" + getBid() +
 						  " <b>Ask: </b>" + getAsk() + 
-						  " <b>Date: </b>" + getDate()));
+						  " <b>Date: </b>" + dateToStr));
 	}
 }
