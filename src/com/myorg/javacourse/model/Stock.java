@@ -3,6 +3,8 @@ package com.myorg.javacourse.model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.myorg.javacourse.model.Portfolio.ALGO_RECOMMENDATION;
+
 /**
 Stock.java
 Purpose: Represents a Stock
@@ -19,27 +21,24 @@ public class Stock
 	private float ask;
 	private float bid;
 	private Date date;
-	private int recommendation;
+	private ALGO_RECOMMENDATION recommendation;
 	private int stockQuantity;
-	private final static int BUY = 0;
-	private final static int SELL = 1;
-	private final static int REMOVE = 2;
-	private final static int HOLD = 3;
 	
 	// ***************************************
 	// C'tor/D'tor Section
 	// ***************************************
 	
-	// public Stock(String symbol, float ask, float bid, Date date) 
-	// ============================================================
+	// public Stock(String symbol, float ask, float bid, Date date, int stockQuantity)
+	// ===============================================================================
 	// Constructor
-	public Stock(String symbol, float ask, float bid, Date date) 
+	public Stock(String symbol, float ask, float bid, Date date, int stockQuantity) 
 	{
 		super();
 		this.symbol = symbol;
 		this.ask = ask;
 		this.bid = bid;
 		this.date = date;
+		this.stockQuantity = stockQuantity;
 	}
 	
 	// public Stock(Stock stockToCopy) 
@@ -50,7 +49,8 @@ public class Stock
 		this(new String(stockToCopy.getSymbol()), 
 			 stockToCopy.getAsk(), 
 			 stockToCopy.getBid(), 
-			 new Date(stockToCopy.getDate().getTime()));
+			 new Date(stockToCopy.getDate().getTime()),
+			 stockToCopy.getStockQuantity());
 	}
 	
 	// ***************************************
@@ -121,6 +121,22 @@ public class Stock
 		this.date = date;
 	}
 	
+	// public int getStockQuantity()
+	// =============================
+	// Get the Stock's Quantity
+	public int getStockQuantity()
+	{
+		return stockQuantity;
+	}
+	
+	// public void setStockQuantity(int stockQuantity)
+	// ===============================================
+	// Set the Stock's Quantity
+	public void setStockQuantity(int stockQuantity)
+	{
+		this.stockQuantity = stockQuantity;
+	}
+	
 	// ***************************************
 	// Member Functions Section
 	// ***************************************
@@ -139,6 +155,7 @@ public class Stock
 		return(new String("<b>Stock Symbol: </b>" + getSymbol() +
 						  " <b>Bid: </b>" + getBid() +
 						  " <b>Ask: </b>" + getAsk() + 
-						  " <b>Date: </b>" + dateToStr));
+						  " <b>Date: </b>" + dateToStr +
+						  " <b>Quantity: </b>" + getStockQuantity()));
 	}
 }
