@@ -3,16 +3,18 @@ package com.myorg.javacourse.model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.algo.model.StockInterface;
+
 import com.myorg.javacourse.model.Portfolio.ALGO_RECOMMENDATION;
 
 /**
 Stock.java
-Purpose: Represents a Stock
+Purpose: Represents a Stock (Interface)
 
 @author Eli Wainer
-@version 1.1 02/05/2015
+@version 1.2 22/05/2015
 */
-public class Stock 
+public class Stock implements StockInterface
 {
 	// ***************************************
 	// Members Section
@@ -28,9 +30,16 @@ public class Stock
 	// C'tor/D'tor Section
 	// ***************************************
 	
+	// public Stock() 
+	// ==============
+	// Empty Constructor
+	public Stock() 
+	{
+	}
+	
 	// public Stock(String symbol, float ask, float bid, Date date, int stockQuantity)
 	// ===============================================================================
-	// Constructor
+	// Default Constructor
 	public Stock(String symbol, float ask, float bid, Date date, int stockQuantity) 
 	{
 		super();
@@ -56,7 +65,7 @@ public class Stock
 	// ***************************************
 	// Access Methods Section
 	// ***************************************
-	
+
 	// public String getSymbol() 
 	// =========================
 	// Get the Stock's Symbol
@@ -121,6 +130,14 @@ public class Stock
 		this.date = date;
 	}
 	
+	// public void setDate(long time) 
+	// ==============================
+	// Set the Stock's Date from Long
+	public void setDate(long time) 
+	{
+		this.date = new Date(time);
+	}
+	
 	// public int getStockQuantity()
 	// =============================
 	// Get the Stock's Quantity
@@ -135,6 +152,22 @@ public class Stock
 	public void setStockQuantity(int stockQuantity)
 	{
 		this.stockQuantity = stockQuantity;
+	}
+	
+	// public Enum<ALGO_RECOMMENDATION> getRecommendation() 
+	// ====================================================
+	// Get the Stock's Recommendation
+	public Enum<ALGO_RECOMMENDATION> getRecommendation() 
+	{
+		return this.recommendation;
+	}
+	
+	// public void setRecommendation(ALGO_RECOMMENDATION valueOf) 
+	// ==========================================================
+	// Set the Stock's Recommendation
+	public void setRecommendation(ALGO_RECOMMENDATION valueOf) 
+	{
+		this.recommendation = valueOf;
 	}
 	
 	// ***************************************

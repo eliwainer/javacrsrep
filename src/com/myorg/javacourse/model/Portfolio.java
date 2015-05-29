@@ -1,22 +1,25 @@
 package com.myorg.javacourse.model;
 
+import org.algo.model.PortfolioInterface;
+import org.algo.model.StockInterface;
+
 /**
 Portfolio.java
-Purpose: Represents a Portfolio
+Purpose: Represents a Portfolio (Interface)
 
 @author Eli Wainer
-@version 1.1 02/05/2015
+@version 1.2 22/05/2015
 */
-public class Portfolio 
+public class Portfolio implements PortfolioInterface
 {
+	private final static int MAX_PORTFOLIO_SIZE = 5;
 	public enum ALGO_RECOMMENDATION {BUY, SELL, REMOVE, HOLD};
 	
 	// ***************************************
 	// Members Section
 	// ***************************************
 	private String title;
-	private final static int MAX_PORTFOLIO_SIZE = 5;
-	private Stock[] stocks;
+	private StockInterface[] stocks;
 	private int currPortfolioIndex;
 	private float balance;
 	
@@ -33,6 +36,24 @@ public class Portfolio
 		stocks = new Stock[MAX_PORTFOLIO_SIZE];
 		currPortfolioIndex = 0;
 		balance = 0;
+	}
+	
+	// public Portfolio(Stock[] stockArray) 
+	// ====================================
+	// Constructor from Array of Stocks
+	public Portfolio(Stock[] stockArray) 
+	{
+		stocks = new Stock[MAX_PORTFOLIO_SIZE];
+		currPortfolioIndex = 0;
+		balance = 0;
+		
+		// Go over the given Array
+		for(int i = 0; i < stockArray.length; i++)
+		{
+			// Add the Stock
+			stocks[i] = stockArray[i];
+			currPortfolioIndex++;
+		}
 	}
 	
 	// public Portfolio(Portfolio portfolioToCopy)  
@@ -62,7 +83,7 @@ public class Portfolio
 	// Return the Stocks array
 	public Stock[] getStocks() 
 	{
-		return stocks;
+		return (Stock[]) stocks;
 	}
 	
 	// public String getTitle()
@@ -105,6 +126,14 @@ public class Portfolio
 		return balance;
 	}
 	
+	// public static int getMaxSize() 
+	// ==============================
+	// Return the Max Size of the Portfolio
+	public static int getMaxSize() 
+	{
+		return MAX_PORTFOLIO_SIZE;
+	}
+	
 	// public float getStocksValue()
 	// =============================
 	// Return the Total value of all Stocks
@@ -116,7 +145,7 @@ public class Portfolio
 		for(int i = 0; i < currPortfolioIndex; i++)
 		{
 			// Calculate the value of each Stock, and sum to Total
-			totalValue += stocks[i].getStockQuantity() * stocks[i].getBid();
+			totalValue += ((Stock) stocks[i]).getStockQuantity() * stocks[i].getBid();
 		}
 		
 		return (totalValue);
@@ -158,6 +187,29 @@ public class Portfolio
 	}
 	
 	/**
+	 * This method finds the given Stock in the Portfolio
+	 *
+	 * @param  symbol		the symbol of the Stock to be found
+	 * @return      		the Stock if found, NULL if not
+	 */
+	public Stock findStock(String symbol) 
+	{
+		// Go over the Portfolio
+		for(int i = 0; i < currPortfolioIndex; i++)
+		{
+			// If the current Stock matches the searched one
+			if (stocks[i].getSymbol().equals(symbol))
+			{
+				// Return found Stock
+				return (Stock) (stocks[i]);
+			}
+		}
+		
+		// Return Stock not found
+		return(null);
+	}
+	
+	/**
 	 * This method adds a new Stock to the Portfolio
 	 *
 	 * @param  stockToAdd	the Stock to be added
@@ -183,7 +235,7 @@ public class Portfolio
 			stocks[currPortfolioIndex] = stockToAdd;
 			
 			// Set added Stock quantity to 0
-			stocks[currPortfolioIndex].setStockQuantity(0);
+			((Stock) stocks[currPortfolioIndex]).setStockQuantity(0);
 			
 			// Update Portfolio size
 			currPortfolioIndex++;
@@ -249,7 +301,7 @@ public class Portfolio
 		}
 		
 		// If the Stock's to Sell quantity is bigger than availiable
-		else if(quantity > stocks[indexToSell].getStockQuantity())
+		else if(quantity > ((Stock) stocks[indexToSell]).getStockQuantity())
 		{
 			System.out.println("Not enough Stocks to Sell!");
 			return (false);
@@ -262,11 +314,11 @@ public class Portfolio
 			if (quantity == -1)
 			{
 				// Sell the whole Stock
-				quantity = stocks[indexToSell].getStockQuantity();
+				quantity = ((Stock) stocks[indexToSell]).getStockQuantity();
 			}
 			
 			// Update the Sold Stock's quantity
-			stocks[indexToSell].setStockQuantity(stocks[indexToSell].getStockQuantity() - quantity);
+			((Stock) stocks[indexToSell]).setStockQuantity(((Stock) stocks[indexToSell]).getStockQuantity() - quantity);
 			
 			// Update the Portfolio's Balance
 			updateBalance(quantity * stocks[indexToSell].getBid());
@@ -313,7 +365,7 @@ public class Portfolio
 			else
 			{
 				// Update the Bought Stock's quantity
-				stocks[indexToBuy].setStockQuantity(stocks[indexToBuy].getStockQuantity() + quantity);
+				((Stock) stocks[indexToBuy]).setStockQuantity(((Stock) stocks[indexToBuy]).getStockQuantity() + quantity);
 				
 				// Update the Portfolio's Balance
 				updateBalance((-1) * quantity * stocks[indexToBuy].getAsk());
@@ -349,7 +401,7 @@ public class Portfolio
 				addStock(stockToBuy);
 				
 				// Update the Bought Stock's quantity
-				stocks[currPortfolioIndex - 1].setStockQuantity(quantity);
+				((Stock) stocks[currPortfolioIndex - 1]).setStockQuantity(quantity);
 				
 				// Update the Portfolio's Balance
 				updateBalance((-1) * quantity * stockToBuy.getAsk());
@@ -398,7 +450,7 @@ public class Portfolio
 		for(int i = 0; i < currPortfolioIndex; i++)
 		{
 			// Add current Stock's info
-			retStr += "&nbsp;&nbsp;&nbsp;&nbsp;" + stocks[i].getHtmlDescription() + "<br>";
+			retStr += "&nbsp;&nbsp;&nbsp;&nbsp;" + ((Stock) stocks[i]).getHtmlDescription() + "<br>";
 		}
 		retStr += "}";
 		return(retStr);
