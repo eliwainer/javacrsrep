@@ -3,6 +3,11 @@ package com.myorg.javacourse.model;
 import org.algo.model.PortfolioInterface;
 import org.algo.model.StockInterface;
 
+import com.myorg.javacourse.exception.BalanceException;
+import com.myorg.javacourse.exception.PortfolioFullException;
+import com.myorg.javacourse.exception.StockAlreadyExistsException;
+import com.myorg.javacourse.exception.StockNotExistException;
+
 /**
 Portfolio.java
 Purpose: Represents a Portfolio (Interface)
@@ -213,19 +218,28 @@ public class Portfolio implements PortfolioInterface
 	 * This method adds a new Stock to the Portfolio
 	 *
 	 * @param  stockToAdd	the Stock to be added
+	 * @throws StockNotExistException 
+	 * @throws StockAlreadyExistsException 
+	 * @throws PortfolioFullException 
 	 */
-	public void addStock(Stock stockToAdd)
+	public void addStock(Stock stockToAdd) throws StockNotExistException, StockAlreadyExistsException, PortfolioFullException
 	{
 		// If Stock is not valid
 		if(stockToAdd == null)
 		{
-			System.out.println("Stock is not valid!");
+			throw new StockNotExistException("Stock is not valid!");
+		}
+		
+		// If Stock already exists
+		else if (isStockInPortfolio(stockToAdd.getSymbol()) != -1)
+		{
+			throw new StockAlreadyExistsException("Stock already exists in the current Portfolio!");
 		}
 		
 		// If Portfolio is full
 		else if (currPortfolioIndex >= MAX_PORTFOLIO_SIZE)
 		{
-			System.out.println("Can't add new Stock, portfolio can have only " + MAX_PORTFOLIO_SIZE + " stocks");
+			throw new PortfolioFullException("Can't add new Stock, portfolio can have only " + MAX_PORTFOLIO_SIZE + " stocks");
 		}
 		
 		// If Stock is valid, Portfolio is not full and Stock doesn't already exists
@@ -247,8 +261,10 @@ public class Portfolio implements PortfolioInterface
 	 *
 	 * @param  symbolToRemove	the symbol of the Stock to be removed
 	 * @return      			True if Stock was Sold and Removed, False if not
+	 * @throws BalanceException 
+	 * @throws StockNotExistException 
 	 */
-	public boolean removeStock(String symbolToRemove)
+	public void removeStock(String symbolToRemove) throws BalanceException, StockNotExistException
 	{
 		// Check if the Stock to remove is in the Portfolio
 		int indexToRemove = isStockInPortfolio(symbolToRemove);
@@ -272,13 +288,7 @@ public class Portfolio implements PortfolioInterface
 			
 			// Update Portfolio size
 			currPortfolioIndex--;
-			
-			// Stock successfully Sold and Removed
-			return (true);
 		}
-		
-		// If the Stock to remove is not found in the Portfolio
-		return (false);
 	}
 	
 	/**
@@ -286,9 +296,10 @@ public class Portfolio implements PortfolioInterface
 	 *
 	 * @param  symbolToSell		the symbol of the Stock to be Sold
 	 * @param  quantity			the number of this Stock to be Sold
-	 * @return      			True if Stock was Sold, False if not
+	 * @throws BalanceException
+	 * @throws StockNotExistException
 	 */
-	public boolean sellStock(String symbolToSell, int quantity)
+	public void sellStock(String symbolToSell, int quantity) throws BalanceException, StockNotExistException
 	{
 		// Check if the Stock to Sell is in the Portfolio
 		int indexToSell = isStockInPortfolio(symbolToSell);
@@ -296,15 +307,13 @@ public class Portfolio implements PortfolioInterface
 		// If the Stock to Sell is not found in the Portfolio
 		if(indexToSell == -1)
 		{
-			System.out.println("Given Stock is not found in the Portfolio!");
-			return (false);
+			throw new StockNotExistException("Given Stock is not found in the Portfolio!");
 		}
 		
 		// If the Stock's to Sell quantity is bigger than availiable
 		else if(quantity > ((Stock) stocks[indexToSell]).getStockQuantity())
 		{
-			System.out.println("Not enough Stocks to Sell!");
-			return (false);
+			throw new BalanceException("Not enough Stocks to Sell!");
 		}
 		
 		// If the Stock and the Quantity are valid
@@ -322,8 +331,6 @@ public class Portfolio implements PortfolioInterface
 			
 			// Update the Portfolio's Balance
 			updateBalance(quantity * stocks[indexToSell].getBid());
-			
-			return (true);
 		}
 		
 	}
@@ -333,9 +340,12 @@ public class Portfolio implements PortfolioInterface
 	 *
 	 * @param  stockToBuy		the Stock to be Bought
 	 * @param  quantity			the number of this Stock to be Bought
-	 * @return      			True if Stock was Bought, False if not
+	 * @throws BalanceException 
+	 * @throws PortfolioFullException 
+	 * @throws StockAlreadyExistsException 
+	 * @throws StockNotExistException 
 	 */
-	public boolean buyStock(Stock stockToBuy, int quantity)
+	public void buyStock(Stock stockToBuy, int quantity) throws BalanceException, StockNotExistException, StockAlreadyExistsException, PortfolioFullException
 	{
 		// Check if the Stock to Buy is already in the Portfolio
 		int indexToBuy = isStockInPortfolio(stockToBuy.getSymbol());
@@ -357,8 +367,7 @@ public class Portfolio implements PortfolioInterface
 			// If the Total Purchase Sum exceeds from the Portfolio Balance
 			if(totalPurchaseSum > getBalance())
 			{
-				System.out.println("Not enough Balance to complete Purchase!");
-				return (false);
+				throw new BalanceException("Not enough Balance to complete Purchase!");
 			}
 			
 			// If the Total Purchase Sum is valid
@@ -369,8 +378,6 @@ public class Portfolio implements PortfolioInterface
 				
 				// Update the Portfolio's Balance
 				updateBalance((-1) * quantity * stocks[indexToBuy].getAsk());
-				
-				return (true);
 			}
 		}
 		
@@ -390,8 +397,7 @@ public class Portfolio implements PortfolioInterface
 			// If the Total Purchase Sum exceeds from the Portfolio Balance
 			if(totalPurchaseSum > getBalance())
 			{
-				System.out.println("Not enough Balance to complete Purchase!");
-				return (false);
+				throw new BalanceException("Not enough Balance to complete Purchase!");
 			}
 			
 			// If the Total Purchase Sum is valid
@@ -405,8 +411,6 @@ public class Portfolio implements PortfolioInterface
 				
 				// Update the Portfolio's Balance
 				updateBalance((-1) * quantity * stockToBuy.getAsk());
-				
-				return (true);
 			}
 		}
 	}
@@ -415,13 +419,14 @@ public class Portfolio implements PortfolioInterface
 	 * This method updates the Balance of the Portfolio
 	 *
 	 * @param  amount	the Amount to be added
+	 * @throws BalanceException
 	 */
-	public void updateBalance(float amount)
+	public void updateBalance(float amount) throws BalanceException
 	{
 		// If the adding of the Amount will bring a negative result
 		if(balance + amount < 0)
 		{
-			System.out.println("Portfolio Balance cannot be negative!");
+			throw new BalanceException("Portfolio Balance cannot be negative!");
 		}
 		
 		// If the adding of the Amount will not bring a negative result
